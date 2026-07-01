@@ -1,6 +1,6 @@
 # COMPUTE Native Android Calculator
 
-This is a Kotlin native Android conversion of `casio-mj12d-calculator.html`.
+This is a Kotlin native Android conversion of `calculator.html`.
 
 It uses one custom Android `View` for the calculator body, display, buttons, touch handling, and calculation logic. That keeps the UI path lightweight and responsive without a WebView.
 
