@@ -16,26 +16,23 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: '8.7'
-
-      - name: Generate Gradle Wrapper
+      - name: Create Gradle Wrapper
         run: |
-          mkdir -p /tmp/wrappergen
-          echo 'plugins {}' > /tmp/wrappergen/build.gradle
-          echo 'rootProject.name = "temp"' > /tmp/wrappergen/settings.gradle
-          cd /tmp/wrappergen
-          gradle wrapper --gradle-version=8.7
-          cd $GITHUB_WORKSPACE
-          cp /tmp/wrappergen/gradlew .
           mkdir -p gradle/wrapper
-          cp /tmp/wrappergen/gradle/wrapper/gradle-wrapper.jar gradle/wrapper/
-          cp /tmp/wrappergen/gradle/wrapper/gradle-wrapper.properties gradle/wrapper/
+          cat > gradle/wrapper/gradle-wrapper.properties << 'EOF'
+          distributionBase=GRADLE_USER_HOME
+          distributionPath=wrapper/dists
+          distributionUrl=https\://services.gradle.org/distributions/gradle-8.7-bin.zip
+          zipStoreBase=GRADLE_USER_HOME
+          zipStorePath=wrapper/dists
+          EOF
+          curl -sL https://github.com/gradle/gradle/raw/v8.7.0/gradle/wrapper/gradle-wrapper.jar \
+            -o gradle/wrapper/gradle-wrapper.jar
+          curl -sL https://github.com/gradle/gradle/raw/v8.7.0/gradlew -o gradlew
           chmod +x gradlew
 
       - name: Build debug APK
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleDebug --no-daemon
 
       - uses: actions/upload-artifact@v4
         with:
